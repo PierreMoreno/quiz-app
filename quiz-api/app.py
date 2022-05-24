@@ -1,7 +1,7 @@
 from asyncio.windows_events import NULL
 from flask import Flask, request
 from jwt_utils import build_token, decode_token
-from controller import AddQuestion
+from controller import AddQuestion, FetchQuestion, UpdateQuestion, RemoveQuestion
 
 app = Flask(__name__)
 
@@ -23,7 +23,7 @@ def Login():
 		return '', 401
 
 @app.route('/questions', methods=['POST'])
-def Questions():
+def PostQuestion():
 	#Récupérer le token envoyé en paramètre
 	token = request.headers.get('Authorization')
 
@@ -40,6 +40,49 @@ def Questions():
 
 	return '', 200
 
+@app.route('/questions/<position>', methods=['GET'])
+def GetQuestion(position):
+	
+	json = FetchQuestion(position)
+
+	return json, 200
+
+@app.route('/questions/<position>', methods=['PUT'])
+def PutQuestion(position):
+	#Récupérer le token envoyé en paramètre
+	token = request.headers.get('Authorization')
+
+	if(token == None):
+		return '', 401
+
+	if(decode_token(token[7:]) != "quiz-app-admin"):
+		return '', 401
+	
+	payload = request.get_json()
+
+	UpdateQuestion(payload)
+
+	return '', 200
+
+@app.route('/questions/<position>', methods=['DELETE'])
+def DeleteQuestion(position):
+	#Récupérer le token envoyé en paramètre
+	token = request.headers.get('Authorization')
+
+	if(token == None):
+		return '', 401
+
+	if(decode_token(token[7:]) != "quiz-app-admin"):
+		return '', 401
+	
+	RemoveQuestion(position)
+
+	return '', 204
+
+@app.route('/participations', methods=['POST'])
+def PostParticipation():
+	
+	return '', 200
 
 if __name__ == "__main__":
     app.run(ssl_context='adhoc')

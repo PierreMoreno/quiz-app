@@ -2,10 +2,10 @@ import json
 
 class Answer:
 
-    def init(self, text: str, question_id: int, is_correct: int):
+    def __init__(self, text: str, id: int, isCorrect: bool):
         self.text = text
-        self.question_id = question_id
-        self.is_correct = is_correct
+        self.id = id
+        self.isCorrect = isCorrect
 
     def ConvertToJson(self):
         return json.dumps(self.__dict__)
