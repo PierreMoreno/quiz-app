@@ -8,4 +8,4 @@ class Answer:
         self.isCorrect = isCorrect
 
     def ConvertToJson(self):
-        return json.dumps(self.__dict__)
+        return {"text": self.text,"id": self.id, 'isCorrect': self.isCorrect}

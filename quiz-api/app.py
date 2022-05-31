@@ -1,7 +1,7 @@
 from asyncio.windows_events import NULL
 from flask import Flask, request
 from jwt_utils import build_token, decode_token
-from controller import AddQuestion, FetchQuestion, UpdateQuestion, RemoveQuestion, AddParticipation, RemoveParticipations
+from controller import QuizInfo ,AddQuestion, FetchQuestion, UpdateQuestion, RemoveQuestion, AddParticipation, RemoveParticipations
 
 app = Flask(__name__)
 
@@ -12,7 +12,10 @@ def hello_world():
 
 @app.route('/quiz-info', methods=['GET'])
 def GetQuizInfo():
-	return {"size": 0, "scores": []}, 200
+
+	quiz_info = QuizInfo() 
+
+	return quiz_info, 200
 
 @app.route('/login', methods=['POST'])
 def Login():
@@ -43,9 +46,9 @@ def PostQuestion():
 @app.route('/questions/<position>', methods=['GET'])
 def GetQuestion(position):
 	
-	json = FetchQuestion(position)
-
-	return json, 200
+	response = FetchQuestion(position)
+	
+	return response
 
 @app.route('/questions/<position>', methods=['PUT'])
 def PutQuestion(position):
@@ -60,9 +63,9 @@ def PutQuestion(position):
 	
 	payload = request.get_json()
 
-	UpdateQuestion(payload)
+	response = UpdateQuestion(position, payload)
 
-	return '', 200
+	return response
 
 @app.route('/questions/<position>', methods=['DELETE'])
 def DeleteQuestion(position):
@@ -76,18 +79,18 @@ def DeleteQuestion(position):
 	if(decode_token(token[7:]) != "quiz-app-admin"):
 		return '', 401
 	
-	RemoveQuestion(position)
+	response = RemoveQuestion(position)
 
-	return '', 204
+	return response
 
 @app.route('/participations', methods=['POST'])
 def PostParticipation():
 	
 	payload = request.get_json()
 
-	return_json = AddParticipation(payload)
+	response = AddParticipation(payload)
 	
-	return return_json, 200
+	return response
 
 @app.route('/participations', methods=['DELETE'])
 def DeleteParticipation():
