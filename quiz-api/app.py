@@ -1,9 +1,11 @@
 from asyncio.windows_events import NULL
 from flask import Flask, request
+from flask_cors import CORS
 from jwt_utils import build_token, decode_token
 from controller import QuizInfo ,AddQuestion, FetchQuestion, UpdateQuestion, RemoveQuestion, AddParticipation, RemoveParticipations
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def hello_world():
@@ -109,4 +111,4 @@ def DeleteParticipation():
 	return '', 204
 
 if __name__ == "__main__":
-    app.run(ssl_context='adhoc')
+    app.run()
